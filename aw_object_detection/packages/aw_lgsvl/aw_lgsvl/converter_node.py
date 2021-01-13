@@ -51,7 +51,9 @@ def build_header():
     nanoseconds, seconds = math.modf(epoch_time)
     seconds = int(seconds)
     nanoseconds = int(nanoseconds * math.pow(10, 9))
-    return Header(stamp=Time(sec=seconds, nanosec=nanoseconds), frame_id='base_link')
+    return Header(
+        stamp=Time(sec=seconds, nanosec=nanoseconds),
+        frame_id='base_link')  # TODO: read frame_id from parameter
 
 
 class Converter(Node):
@@ -59,17 +61,17 @@ class Converter(Node):
         super().__init__('converter')
         self.subscription = self.create_subscription(
             BoundingBoxArray,
-            '/robolux/lidar_bounding_boxes',
+            '/robolux/lidar_bounding_boxes',  # TODO: read topic name from parameter
             self.listener_callback,
             10)
-        self.publisher = self.create_publisher(Detection3DArray, '/robolux/lgsvl_detections', 10)
-        self.get_logger().info('I started')
+        self.publisher = self.create_publisher(
+            Detection3DArray,
+            '/robolux/lgsvl_detections',  # TODO: read topic name from parameter
+            10)
 
-    def listener_callback(self, msgs):
+    def listener_callback(self, msg):
         simulator_array = create_detection_array()
-        simulator_array.detections = [aw_box_to_lgsvl_detection3d(msg) for msg in msgs.boxes]
-        self.get_logger().info("Original message: %s" % msgs)
-        self.get_logger().info("Converted message: %s" % simulator_array)
+        simulator_array.detections = [aw_box_to_lgsvl_detection3d(box) for box in msg.boxes]
         self.publisher.publish(simulator_array)
 
 
