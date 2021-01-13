@@ -8,3 +8,4 @@ Currently integrated:
 * Ros2 Foxy
 * Autoware.Auto
 * lgsvl_bridge
+* Autoware clustering can be converted to ground-truth data for lgsvl so that rendered within the simulator scene
