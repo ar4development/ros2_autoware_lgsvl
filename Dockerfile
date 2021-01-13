@@ -31,10 +31,33 @@ WORKDIR /ad_stack/AutowareAuto
 RUN vcs import < autoware.auto.$ROS_DISTRO.repos && rosdep install -y -i --from-paths src
 RUN bash -c "source /opt/ros/$ROS_DISTRO/setup.bash; colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release"
 
+
+#### Install VNC server
+
+
 #### INSTALLING lgsvl harness
+
+## Install lgsvl_bridge
 
 WORKDIR /ad_stack
 RUN git clone https://github.com/lgsvl/ros2-lgsvl-bridge.git
 WORKDIR /ad_stack/ros2-lgsvl-bridge
 RUN bash -c "source /opt/ros/$ROS_DISTRO/setup.bash; git checkout ${ROS_DISTRO}-devel; colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release"
 
+## Install lgsvl message types
+
+WORKDIR /ad_stack
+RUN git clone https://github.com/lgsvl/lgsvl_msgs.git
+WORKDIR /ad_stack/lgsvl_msgs
+RUN bash -c "source /opt/ros/$ROS_DISTRO/setup.bash; colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release"
+
+## Copy sample parameters
+
+COPY aw_object_detection/ /ad_stack/aw_object_detection
+
+# lgsvl_bridge
+EXPOSE 9090/tcp 
+
+COPY entrypoint.sh /
+RUN ["chmod", "+x", "/entrypoint.sh"]
+ENTRYPOINT /entrypoint.sh

@@ -1,0 +1,26 @@
+# config/test.param.yaml
+---
+robolux:
+  filter_transform_vlp16:
+    ros__parameters:
+      timeout_ms:       110
+      pcl_size:         55000
+      input_frame_id:  "velodyne"
+      output_frame_id: "base_link"
+      init_timeout_ms:  5000
+      expected_num_subscribers: 1
+      expected_num_publishers:  1
+      start_angle:            -3.1415       # radians
+      end_angle:              3.1415
+      min_radius:             2.8      # meters
+      max_radius:             100.0
+      static_transformer:
+        quaternion:
+          x:                    0.0
+          y:                    0.0
+          z:                    0.0
+          w:                    1.0
+        translation:
+          x:                    0.0
+          z:                    2.312
+          y:                    -0.3679201
