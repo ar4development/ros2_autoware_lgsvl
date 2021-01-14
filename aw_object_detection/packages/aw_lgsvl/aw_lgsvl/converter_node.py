@@ -38,11 +38,7 @@ def aw_box_to_lgsvl_detection3d(aw_box):
     return simulator_detection
 
 
-def create_detection_array():
-    return Detection3DArray(header=build_header())
-
-
-def build_header():
+def build_header(target_frame):
     from builtin_interfaces.msg import Time
     from std_msgs.msg import Header
     import time
@@ -53,24 +49,28 @@ def build_header():
     nanoseconds = int(nanoseconds * math.pow(10, 9))
     return Header(
         stamp=Time(sec=seconds, nanosec=nanoseconds),
-        frame_id='base_link')  # TODO: read frame_id from parameter
+        frame_id=target_frame)
 
 
 class Converter(Node):
     def __init__(self):
         super().__init__('converter')
+        self.declare_parameter('in_topic', '/aw_clustered')
+        self.declare_parameter('out_topic', '/lgsvl_detections')
+        self.declare_parameter('target_frame', 'base_link')
         self.subscription = self.create_subscription(
             BoundingBoxArray,
-            '/robolux/lidar_bounding_boxes',  # TODO: read topic name from parameter
+            self.get_parameter("in_topic").get_parameter_value().string_value,
             self.listener_callback,
             10)
         self.publisher = self.create_publisher(
             Detection3DArray,
-            '/robolux/lgsvl_detections',  # TODO: read topic name from parameter
+            self.get_parameter("out_topic").get_parameter_value().string_value,
             10)
 
     def listener_callback(self, msg):
-        simulator_array = create_detection_array()
+        simulator_array = Detection3DArray(
+            header=build_header(self.get_parameter("target_frame").get_parameter_value().string_value))
         simulator_array.detections = [aw_box_to_lgsvl_detection3d(box) for box in msg.boxes]
         self.publisher.publish(simulator_array)
 
