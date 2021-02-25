@@ -1,6 +1,4 @@
-# config/vlp16_lexus.param.yaml
----
-robolux:
+ar4development:
   ground_vs_objects:
     ros__parameters:
       timeout_ms:       10

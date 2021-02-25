@@ -1,6 +1,6 @@
 converter:
   ros__parameters:
-    in_topic: /robolux/lidar_bounding_boxes
-    out_topic: /robolux/ar_test
-    gps: /robolux/gps_odometry
+    in_topic: /ar4development/lidar_bounding_boxes
+    out_topic: /ar4development/lgsvl_detections
+    gps: /ar4development/gps_odometry
     target_frame: gps

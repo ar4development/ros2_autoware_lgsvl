@@ -1,7 +1,4 @@
-# config/vlp16_lexus_cluster.param.yaml
----
-
-robolux:
+ar4development:
   object_detection_node:
     ros__parameters:  
       use_cluster: True
@@ -12,7 +9,7 @@ robolux:
       use_z: True
       cluster:
         frame_id: "base_link"
-        min_cluster_size: 0
+        min_cluster_size: 10
         max_num_clusters: 256
       hash:
         min_x: -130.0

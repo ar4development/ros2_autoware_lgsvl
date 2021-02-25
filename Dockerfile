@@ -51,9 +51,15 @@ RUN git clone https://github.com/lgsvl/lgsvl_msgs.git
 WORKDIR /ad_stack/lgsvl_msgs
 RUN bash -c "source /opt/ros/$ROS_DISTRO/setup.bash; colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release"
 
-## Copy sample parameters
+## Copy sample parameters and package to stream detections to LGSVL format
 
 COPY aw_object_detection/ /ad_stack/aw_object_detection
+
+## Install the copied package
+WORKDIR /ad_stack/aw_object_detection/packages/aw_lgsvl
+# below sourcing of lgsvl messages probably not required for installation..
+RUN bash -c "source /opt/ros/$ROS_DISTRO/setup.bash; source /ad_stack/lgsvl_msgs/install/setup.bash; colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release" 
+RUN pip3 install -r requirements.txt
 
 # lgsvl_bridge
 EXPOSE 9090/tcp 
